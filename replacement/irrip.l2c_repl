@@ -1,0 +1,125 @@
+#include "cache.h"
+
+/*
+ * I-RRIP: instruction-conscious SRRIP for the L2C  --  CS683 PA2, Task 2A
+ *
+ * Starts from rrip.l2c_repl (2-bit RRPV, insert at 2, hit -> 0, evict RRPV==3)
+ * and changes only the parts that decide instruction vs data priority:
+ *
+ *  insertion : instruction lines are inserted at INSTR_INSERT (near re-reference),
+ *              data lines keep the SRRIP insertion (RRPV 2).
+ *  promotion : instruction hit -> 0. Data hit -> DATA_PROMOTE. With DATA_PROMOTE = 1
+ *              a reused data line still ends up behind a reused instruction line.
+ *  eviction  : among the lines at RRPV 3, a data line is picked first. An
+ *              instruction line is evicted only if every RRPV-3 line is an
+ *              instruction (so a dead instruction line can still leave).
+ *              When nobody is at RRPV 3 we age the set, but instruction lines are
+ *              aged only every INSTR_AGE_EVERY-th time (1 toggle bit per set).
+ *              Without this, a stream of data misses ages the code lines to 3
+ *              just as fast as the data and the "data first" rule never helps.
+ *
+ * Note: on a fill, update_replacement_state() runs before fill_cache(), so
+ * block[set][way] still describes the victim. That is why the instruction bit
+ * of the incoming line has to come in through the isInstruction argument.
+ * We keep our own 1-bit "is instruction" per line instead of relying on BLOCK.
+ */
+
+#define maxRRPV 3
+
+#ifndef INSTR_INSERT
+#define INSTR_INSERT 1
+#endif
+#ifndef DATA_INSERT
+#define DATA_INSERT 2
+#endif
+#ifndef DATA_PROMOTE
+#define DATA_PROMOTE 1
+#endif
+#ifndef EVICT_DATA_FIRST
+#define EVICT_DATA_FIRST 1
+#endif
+#ifndef INSTR_AGE_EVERY
+#define INSTR_AGE_EVERY 2
+#endif
+
+static uint8_t l2_rrpv[L2C_SET][L2C_WAY];      // 2 bits per line
+static uint8_t l2_instr[L2C_SET][L2C_WAY];     // 1 bit per line
+static uint8_t l2_age_cnt[L2C_SET];            // 1 bit per set (for INSTR_AGE_EVERY = 2)
+
+// only demand/prefetch fetches of code count as instruction lines
+// (page-walk packets for code pages also carry instruction=1, we treat them as data)
+static inline bool is_instr_line(uint32_t type, uint8_t isInstruction)
+{
+    return isInstruction && (type == LOAD || type == PREFETCH);
+}
+
+void CACHE::l2c_initialize_replacement()
+{
+    cout << "Initialize I-RRIP state for L2C (instr insert " << INSTR_INSERT
+         << ", data promote " << DATA_PROMOTE << ", evict data first " << EVICT_DATA_FIRST << ")" << endl;
+    for (int i = 0; i < L2C_SET; i++)
+        for (int j = 0; j < L2C_WAY; j++) {
+            l2_rrpv[i][j] = maxRRPV;
+            l2_instr[i][j] = 0;
+        }
+    for (int i = 0; i < L2C_SET; i++)
+        l2_age_cnt[i] = 0;
+}
+
+uint32_t CACHE::l2c_find_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK *current_set, uint64_t ip, uint64_t full_addr, uint32_t type)
+{
+    // invalid line first (all RRPVs start at 3, but be explicit)
+    for (int i = 0; i < L2C_WAY; i++)
+        if (!current_set[i].valid)
+            return i;
+
+    while (1) {
+        int instr_victim = -1;
+        for (int i = 0; i < L2C_WAY; i++) {
+            if (l2_rrpv[set][i] != maxRRPV)
+                continue;
+            if (!EVICT_DATA_FIRST || !l2_instr[set][i])
+                return i;                       // data line at RRPV 3 -> evict
+            if (instr_victim < 0)
+                instr_victim = i;
+        }
+        if (instr_victim >= 0)                  // only instruction lines are at RRPV 3
+            return instr_victim;
+
+        // nobody at 3: age the set. Instruction lines age at a slower rate.
+        l2_age_cnt[set] = (l2_age_cnt[set] + 1) % INSTR_AGE_EVERY;
+        bool age_instr = (l2_age_cnt[set] == 0);
+        bool any_data = false;
+        for (int i = 0; i < L2C_WAY; i++)
+            if (!l2_instr[set][i]) any_data = true;
+        for (int i = 0; i < L2C_WAY; i++)
+            if (l2_rrpv[set][i] < maxRRPV && (!l2_instr[set][i] || age_instr || !any_data))
+                l2_rrpv[set][i]++;
+    }
+
+    assert(0);
+    return 0;
+}
+
+void CACHE::l2c_update_replacement_state(uint32_t cpu, uint32_t set, uint32_t way, uint64_t full_addr, uint64_t ip, uint64_t victim_addr, uint32_t type, uint8_t hit, uint8_t isInstruction)
+{
+    if ((type == WRITEBACK) && ip)
+        assert(0);
+
+    if (hit) {
+        // promotion (same as rrip.l2c_repl for writeback/prefetch hits: they also promote)
+        if (l2_instr[set][way])
+            l2_rrpv[set][way] = 0;
+        else
+            l2_rrpv[set][way] = DATA_PROMOTE;
+        return;
+    }
+
+    // insertion
+    l2_instr[set][way] = is_instr_line(type, isInstruction);
+    l2_rrpv[set][way] = l2_instr[set][way] ? INSTR_INSERT : DATA_INSERT;
+}
+
+void CACHE::l2c_replacement_final_stats()
+{
+}
