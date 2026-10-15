@@ -82,7 +82,7 @@ def table(name, cfgs, metrics):
 T1 = ["baseline", "ip_stride", "spp", "spp_fix1", "spp_fix6", "spp_thr_lo", "spp_thr_hi"]
 T2A = ["baseline", "rrip", "irrip", "irrip_ins_only", "irrip_no_evict", "irrip_ins0"]
 T2B = ["baseline", "rrip", "irrip", "dyn_t10", "dyn_t20", "dyn_t25", "dyn_t35", "dyn_t50", "dyn_duel"]
-T3 = ["baseline", "spp", "dyn_t25", "spp_rrip", "spp_dyn_nopfa", "spp_dyn"]
+T3 = ["baseline", "spp", "dyn_t25", "spp_rrip", "spp_dyn_nopfa", "spp_dyn", "spp_dyn_pf2"]
 
 table("task1_prefetch", T1, ["ipc", "speedup", "l1d_load_mpki", "l1d_pf_acc", "l1d_coverage"])
 table("task2a_irrip", T2A, ["ipc", "speedup", "l2c_load_mpki", "l2c_instr_mpki", "l2c_data_mpki"])
@@ -137,7 +137,7 @@ bars("t2a_ablation", ["rrip", "irrip_ins_only", "irrip_no_evict", "irrip_ins0", 
 bars("t2b_threshold", ["dyn_t10", "dyn_t20", "dyn_t25", "dyn_t35", "dyn_t50", "dyn_duel"], "speedup", "Speedup", "Dynamic I-RRIP: threshold sensitivity", 1.0)
 bars("t2b_speedup", ["rrip", "irrip", "dyn_t25"], "speedup", "Speedup", "Speedup over baseline (LRU)", 1.0)
 
-bars("t3_speedup", ["spp", "dyn_t25", "spp_rrip", "spp_dyn_nopfa", "spp_dyn"], "speedup", "Speedup", "Task 3: SPP + Dynamic I-RRIP", 1.0)
+bars("t3_speedup", ["spp", "dyn_t25", "spp_rrip", "spp_dyn_nopfa", "spp_dyn", "spp_dyn_pf2"], "speedup", "Speedup", "Task 3: SPP + Dynamic I-RRIP", 1.0)
 for m, l in [("l1d_load_mpki", "L1D load MPKI"), ("l2c_load_mpki", "L2C load MPKI"), ("l2c_instr_mpki", "L2C instruction load MPKI"),
              ("l2c_data_mpki", "L2C data load MPKI"), ("l1d_pf_acc", "L1D prefetch accuracy (%)"), ("l1d_coverage", "L1D coverage (%)")]:
-    bars(f"t3_{m}", ["spp", "spp_dyn_nopfa", "spp_dyn"] if "l1d_pf" in m or "cov" in m else ["baseline", "spp", "dyn_t25", "spp_dyn"], m, l, l)
+    bars(f"t3_{m}", ["spp", "spp_dyn_nopfa", "spp_dyn", "spp_dyn_pf2"] if "l1d_pf" in m or "cov" in m else ["baseline", "spp", "dyn_t25", "spp_dyn"], m, l, l)

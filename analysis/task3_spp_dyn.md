@@ -46,3 +46,11 @@
 | spp_dyn | l2c_load_mpki | 16.7144 | 16.7144 |
 | spp_dyn | l2c_instr_mpki | 9.6554 | 9.6554 |
 | spp_dyn | l2c_data_mpki | 7.0590 | 7.0590 |
+| spp_dyn_pf2 | ipc | 0.2341 | 0.2341 |
+| spp_dyn_pf2 | speedup | 1.0066 | 1.0066 |
+| spp_dyn_pf2 | l1d_pf_acc | 50.1985 | 50.1985 |
+| spp_dyn_pf2 | l1d_coverage | 10.3644 | 10.3644 |
+| spp_dyn_pf2 | l1d_load_mpki | 9.5714 | 9.5714 |
+| spp_dyn_pf2 | l2c_load_mpki | 16.7240 | 16.7240 |
+| spp_dyn_pf2 | l2c_instr_mpki | 9.6982 | 9.6982 |
+| spp_dyn_pf2 | l2c_data_mpki | 7.0258 | 7.0258 |

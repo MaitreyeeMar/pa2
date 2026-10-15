@@ -45,3 +45,11 @@ spp_dyn,l1d_load_mpki,9.57508,9.57508
 spp_dyn,l2c_load_mpki,16.7144,16.7144
 spp_dyn,l2c_instr_mpki,9.65544,9.65544
 spp_dyn,l2c_data_mpki,7.05896,7.05896
+spp_dyn_pf2,ipc,0.234075,0.234075
+spp_dyn_pf2,speedup,1.0065534011894166,1.0065534011894166
+spp_dyn_pf2,l1d_pf_acc,50.1985,50.1985
+spp_dyn_pf2,l1d_coverage,10.36437125636348,10.36437125636348
+spp_dyn_pf2,l1d_load_mpki,9.5714,9.5714
+spp_dyn_pf2,l2c_load_mpki,16.724,16.724
+spp_dyn_pf2,l2c_instr_mpki,9.6982,9.6982
+spp_dyn_pf2,l2c_data_mpki,7.02576,7.02576
