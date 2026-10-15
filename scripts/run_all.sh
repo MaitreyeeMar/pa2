@@ -71,7 +71,8 @@ rm -f "${GEN[@]}"
 
 # ---- run ----
 run_one() {  # bin config trace
-    local out="results/$2/$(basename "$3" .champsimtrace.xz).txt"
+    local n=$(basename "$3"); n=${n%.gz}; n=${n%.xz}; n=${n%.champsimtrace}
+    local out="results/$2/$n.txt"
     if [ -s "$out" ] && grep -q "cumulative IPC" "$out"; then return; fi   # already done
     "$1" -warmup_instructions $WARMUP -simulation_instructions $SIM -traces "$3" > "$out" 2>&1
     echo "[done] $2 $(basename "$3")"
@@ -79,7 +80,8 @@ run_one() {  # bin config trace
 export -f run_one; export WARMUP SIM
 for c in "${!CFG[@]}"; do
     mkdir -p "results/$c"
-    for t in "$TRACE_DIR"/*.champsimtrace.xz; do
+    for t in "$TRACE_DIR"/*.xz "$TRACE_DIR"/*.gz; do
+        [ -e "$t" ] || continue
         echo "${BIN[$c]} $c $t"
     done
 done | xargs -P "$JOBS" -L 1 bash -c 'run_one "$0" "$1" "$2"'
