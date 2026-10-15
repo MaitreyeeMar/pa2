@@ -1,0 +1,202 @@
+#include "cache.h"
+
+/*
+ * Dynamic I-RRIP for the L2C  --  CS683 PA2, Task 2B
+ *
+ * Followers switch between plain SRRIP and I-RRIP (same rules as irrip.l2c_repl:
+ * code inserted at 1, data at 2, data hit -> 1, data evicted first, code ages at
+ * half rate).
+ *
+ * DYN_MODE 0 (the formula from the handout):
+ *   Leader sets ((set % 32) == 0, 32 of 1024) always run SRRIP. In them we count
+ *   demand accesses and misses, split into instruction / all. Followers use
+ *   I-RRIP while
+ *        (instr_acc + instr_miss) / (total_acc + total_miss) > THRESH_PCT / 100
+ *   Counters are halved every WINDOW leader accesses so the decision follows
+ *   program phases instead of the whole history.
+ *
+ * DYN_MODE 1 (classic set dueling, our extension):
+ *   32 SRRIP leaders + 32 I-RRIP leaders ((set % 32) == 16) and a 10-bit PSEL.
+ *   Miss in an SRRIP leader -> PSEL up, miss in an I-RRIP leader -> PSEL down.
+ *   Instruction misses count INSTR_MISS_WEIGHT times, because a code miss stalls
+ *   fetch while the OoO core can overlap part of a data miss.
+ *   Followers use I-RRIP when PSEL is in the upper half.
+ */
+
+#define maxRRPV 3
+
+#ifndef DYN_MODE
+#define DYN_MODE 0
+#endif
+#ifndef THRESH_PCT
+#define THRESH_PCT 25
+#endif
+
+#define LEADER_MOD      32
+#define WINDOW          4096       // leader demand accesses before counters are halved
+#define PSEL_BITS       10
+#define PSEL_MAX        ((1 << PSEL_BITS) - 1)
+#define INSTR_MISS_WEIGHT 2
+
+// I-RRIP parameters (same as irrip.l2c_repl)
+#define INSTR_INSERT    1
+#define DATA_INSERT     2
+#define DATA_PROMOTE    1
+#define INSTR_AGE_EVERY 2
+
+static uint8_t l2_rrpv[L2C_SET][L2C_WAY];    // 2 bits / line
+static uint8_t l2_instr[L2C_SET][L2C_WAY];   // 1 bit / line
+static uint8_t l2_age_cnt[L2C_SET];          // 1 bit / set
+
+// DYN_MODE 0 counters (16 bits each)
+static uint32_t ld_instr_acc, ld_instr_miss, ld_total_acc, ld_total_miss;
+// DYN_MODE 1
+static uint32_t psel = PSEL_MAX / 2;
+
+// stats only
+static uint64_t st_fill_irrip = 0, st_fill_rrip = 0;
+
+enum set_kind_t { FOLLOWER, LEADER_RRIP, LEADER_IRRIP };
+
+static inline set_kind_t kind_of(uint32_t set)
+{
+    if ((set % LEADER_MOD) == 0) return LEADER_RRIP;
+    if (DYN_MODE == 1 && (set % LEADER_MOD) == LEADER_MOD / 2) return LEADER_IRRIP;
+    return FOLLOWER;
+}
+
+static inline bool followers_use_irrip()
+{
+#if DYN_MODE == 0
+    // (ia + im) / (ta + tm) > THRESH_PCT/100, in integers
+    return (uint64_t)(ld_instr_acc + ld_instr_miss) * 100 > (uint64_t)THRESH_PCT * (ld_total_acc + ld_total_miss);
+#else
+    return psel > PSEL_MAX / 2;
+#endif
+}
+
+static inline bool use_irrip(uint32_t set)
+{
+    set_kind_t k = kind_of(set);
+    if (k == LEADER_RRIP)  return false;
+    if (k == LEADER_IRRIP) return true;
+    return followers_use_irrip();
+}
+
+static inline bool is_instr_line(uint32_t type, uint8_t isInstruction)
+{
+    return isInstruction && (type == LOAD || type == PREFETCH);
+}
+
+static inline bool is_demand(uint32_t type) { return type != WRITEBACK && type != PREFETCH; }
+
+void CACHE::l2c_initialize_replacement()
+{
+    cout << "Initialize Dynamic I-RRIP for L2C: mode " << DYN_MODE << " threshold " << THRESH_PCT << "%" << endl;
+    for (int i = 0; i < L2C_SET; i++) {
+        l2_age_cnt[i] = 0;
+        for (int j = 0; j < L2C_WAY; j++) {
+            l2_rrpv[i][j] = maxRRPV;
+            l2_instr[i][j] = 0;
+        }
+    }
+    ld_instr_acc = ld_instr_miss = ld_total_acc = ld_total_miss = 0;
+}
+
+uint32_t CACHE::l2c_find_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK *current_set, uint64_t ip, uint64_t full_addr, uint32_t type)
+{
+    for (int i = 0; i < L2C_WAY; i++)
+        if (!current_set[i].valid)
+            return i;
+
+    bool irrip = use_irrip(set);
+
+    while (1) {
+        int data_v = -1, instr_v = -1;
+        for (int i = 0; i < L2C_WAY; i++) {
+            if (l2_rrpv[set][i] != maxRRPV) continue;
+            if (l2_instr[set][i]) { if (instr_v < 0) instr_v = i; }
+            else if (data_v < 0) data_v = i;
+        }
+        int v;
+        if (!irrip) {
+            // SRRIP: first line at RRPV 3
+            v = (data_v >= 0 && (instr_v < 0 || data_v < instr_v)) ? data_v : instr_v;
+        } else {
+            v = (data_v >= 0) ? data_v : instr_v;   // data first
+        }
+        if (v >= 0)
+            return v;
+
+        // age
+        if (!irrip) {
+            for (int i = 0; i < L2C_WAY; i++) l2_rrpv[set][i]++;
+        } else {
+            l2_age_cnt[set] = (l2_age_cnt[set] + 1) % INSTR_AGE_EVERY;
+            bool age_instr = (l2_age_cnt[set] == 0);
+            bool any_data = false;
+            for (int i = 0; i < L2C_WAY; i++)
+                if (!l2_instr[set][i]) any_data = true;
+            for (int i = 0; i < L2C_WAY; i++)
+                if (l2_rrpv[set][i] < maxRRPV && (!l2_instr[set][i] || age_instr || !any_data))
+                    l2_rrpv[set][i]++;
+        }
+    }
+
+    assert(0);
+    return 0;
+}
+
+void CACHE::l2c_update_replacement_state(uint32_t cpu, uint32_t set, uint32_t way, uint64_t full_addr, uint64_t ip, uint64_t victim_addr, uint32_t type, uint8_t hit, uint8_t isInstruction)
+{
+    if ((type == WRITEBACK) && ip)
+        assert(0);
+
+    bool instr = is_instr_line(type, isInstruction);
+    set_kind_t k = kind_of(set);
+
+    // ---- book-keeping in the leader sets (demand traffic only) ----
+    if (is_demand(type)) {
+        if (DYN_MODE == 0 && k == LEADER_RRIP) {
+            ld_total_acc++;
+            if (instr) ld_instr_acc++;
+            if (!hit) { ld_total_miss++; if (instr) ld_instr_miss++; }
+            if (ld_total_acc >= WINDOW) {
+                ld_instr_acc >>= 1; ld_instr_miss >>= 1;
+                ld_total_acc >>= 1; ld_total_miss >>= 1;
+            }
+        }
+        if (DYN_MODE == 1 && !hit && k != FOLLOWER) {
+            uint32_t w = instr ? INSTR_MISS_WEIGHT : 1;
+            if (k == LEADER_RRIP) psel = (psel + w > PSEL_MAX) ? PSEL_MAX : psel + w;
+            else                  psel = (psel < w) ? 0 : psel - w;
+        }
+    }
+
+    bool irrip = use_irrip(set);
+
+    if (hit) {
+        if (!irrip || l2_instr[set][way]) l2_rrpv[set][way] = 0;
+        else                              l2_rrpv[set][way] = DATA_PROMOTE;
+        return;
+    }
+
+    // ---- insertion ----
+    l2_instr[set][way] = instr;
+    if (irrip) st_fill_irrip++; else st_fill_rrip++;
+
+    if (irrip && instr) {
+        l2_rrpv[set][way] = INSTR_INSERT;
+    } else {
+        l2_rrpv[set][way] = DATA_INSERT;   // SRRIP insertion
+    }
+}
+
+void CACHE::l2c_replacement_final_stats()
+{
+    cout << "DYN_IRRIP fills under I-RRIP: " << st_fill_irrip << "  under SRRIP: " << st_fill_rrip
+         << "  (" << (100.0 * st_fill_irrip / (st_fill_irrip + st_fill_rrip + 1e-9)) << "% I-RRIP)" << endl;
+#if DYN_MODE == 1
+    cout << "DYN_IRRIP final PSEL: " << psel << endl;
+#endif
+}
