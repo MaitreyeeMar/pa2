@@ -1,36 +1,36 @@
-| config | metric | Trace1 | GMEAN/AVG |
-|---|---|---|---|
-| baseline | ipc | 0.2326 | 0.2326 |
-| baseline | speedup | 1.0000 | 1.0000 |
-| baseline | l1d_load_mpki | 10.6781 | 10.6781 |
-| baseline | l1d_coverage | 0.0000 | 0.0000 |
-| ip_stride | ipc | 0.2334 | 0.2334 |
-| ip_stride | speedup | 1.0037 | 1.0037 |
-| ip_stride | l1d_load_mpki | 10.1185 | 10.1185 |
-| ip_stride | l1d_pf_acc | 52.9532 | 52.9532 |
-| ip_stride | l1d_coverage | 5.2406 | 5.2406 |
-| spp | ipc | 0.2342 | 0.2342 |
-| spp | speedup | 1.0072 | 1.0072 |
-| spp | l1d_load_mpki | 9.5714 | 9.5714 |
-| spp | l1d_pf_acc | 50.2761 | 50.2761 |
-| spp | l1d_coverage | 10.3644 | 10.3644 |
-| spp_fix1 | ipc | 0.2341 | 0.2341 |
-| spp_fix1 | speedup | 1.0068 | 1.0068 |
-| spp_fix1 | l1d_load_mpki | 9.8659 | 9.8659 |
-| spp_fix1 | l1d_pf_acc | 56.8495 | 56.8495 |
-| spp_fix1 | l1d_coverage | 7.6062 | 7.6062 |
-| spp_fix6 | ipc | 0.2341 | 0.2341 |
-| spp_fix6 | speedup | 1.0066 | 1.0066 |
-| spp_fix6 | l1d_load_mpki | 9.5546 | 9.5546 |
-| spp_fix6 | l1d_pf_acc | 46.7832 | 46.7832 |
-| spp_fix6 | l1d_coverage | 10.5213 | 10.5213 |
-| spp_thr_lo | ipc | 0.2341 | 0.2341 |
-| spp_thr_lo | speedup | 1.0069 | 1.0069 |
-| spp_thr_lo | l1d_load_mpki | 9.5579 | 9.5579 |
-| spp_thr_lo | l1d_pf_acc | 48.5223 | 48.5223 |
-| spp_thr_lo | l1d_coverage | 10.4906 | 10.4906 |
-| spp_thr_hi | ipc | 0.2343 | 0.2343 |
-| spp_thr_hi | speedup | 1.0076 | 1.0076 |
-| spp_thr_hi | l1d_load_mpki | 9.5995 | 9.5995 |
-| spp_thr_hi | l1d_pf_acc | 52.3140 | 52.3140 |
-| spp_thr_hi | l1d_coverage | 10.1010 | 10.1010 |
+| config | metric | Trace1 | Trace3 | GMEAN/AVG |
+|---|---|---|---|---|
+| baseline | ipc | 0.2326 | 0.3819 | 0.3072 |
+| baseline | speedup | 1.0000 | 1.0000 | 1.0000 |
+| baseline | l1d_load_mpki | 10.6781 | 3.4033 | 7.0407 |
+| baseline | l1d_coverage | 0.0000 | 0.0000 | 0.0000 |
+| ip_stride | ipc | 0.2334 | 0.3828 | 0.3081 |
+| ip_stride | speedup | 1.0037 | 1.0023 | 1.0030 |
+| ip_stride | l1d_load_mpki | 10.1185 | 3.3170 | 6.7177 |
+| ip_stride | l1d_pf_acc | 52.9532 | 16.1415 | 34.5474 |
+| ip_stride | l1d_coverage | 5.2406 | 2.5363 | 3.8885 |
+| spp | ipc | 0.2342 | 0.3899 | 0.3120 |
+| spp | speedup | 1.0072 | 1.0208 | 1.0139 |
+| spp | l1d_load_mpki | 9.5714 | 2.7844 | 6.1779 |
+| spp | l1d_pf_acc | 50.2761 | 39.0520 | 44.6641 |
+| spp | l1d_coverage | 10.3644 | 18.1858 | 14.2751 |
+| spp_fix1 | ipc | 0.2341 | 0.3872 | 0.3107 |
+| spp_fix1 | speedup | 1.0068 | 1.0139 | 1.0103 |
+| spp_fix1 | l1d_load_mpki | 9.8659 | 3.0398 | 6.4529 |
+| spp_fix1 | l1d_pf_acc | 56.8495 | 44.3856 | 50.6175 |
+| spp_fix1 | l1d_coverage | 7.6062 | 10.6813 | 9.1438 |
+| spp_fix6 | ipc | 0.2341 | 0.3898 | 0.3119 |
+| spp_fix6 | speedup | 1.0066 | 1.0206 | 1.0135 |
+| spp_fix6 | l1d_load_mpki | 9.5546 | 2.7585 | 6.1566 |
+| spp_fix6 | l1d_pf_acc | 46.7832 | 36.5861 | 41.6847 |
+| spp_fix6 | l1d_coverage | 10.5213 | 18.9462 | 14.7338 |
+| spp_thr_lo | ipc | 0.2341 | 0.3899 | 0.3120 |
+| spp_thr_lo | speedup | 1.0069 | 1.0208 | 1.0138 |
+| spp_thr_lo | l1d_load_mpki | 9.5579 | 2.7696 | 6.1638 |
+| spp_thr_lo | l1d_pf_acc | 48.5223 | 37.2932 | 42.9078 |
+| spp_thr_lo | l1d_coverage | 10.4906 | 18.6195 | 14.5550 |
+| spp_thr_hi | ipc | 0.2343 | 0.3898 | 0.3121 |
+| spp_thr_hi | speedup | 1.0076 | 1.0207 | 1.0141 |
+| spp_thr_hi | l1d_load_mpki | 9.5995 | 2.8072 | 6.2034 |
+| spp_thr_hi | l1d_pf_acc | 52.3140 | 40.7846 | 46.5493 |
+| spp_thr_hi | l1d_coverage | 10.1010 | 17.5147 | 13.8078 |

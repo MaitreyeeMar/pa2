@@ -1,32 +1,32 @@
-| config | metric | Trace1 | GMEAN/AVG |
-|---|---|---|---|
-| baseline | ipc | 0.2326 | 0.2326 |
-| baseline | speedup | 1.0000 | 1.0000 |
-| baseline | l2c_load_mpki | 17.7085 | 17.7085 |
-| baseline | l2c_instr_mpki | 10.3525 | 10.3525 |
-| baseline | l2c_data_mpki | 7.3560 | 7.3560 |
-| rrip | ipc | 0.2322 | 0.2322 |
-| rrip | speedup | 0.9985 | 0.9985 |
-| rrip | l2c_load_mpki | 17.6223 | 17.6223 |
-| rrip | l2c_instr_mpki | 10.5500 | 10.5500 |
-| rrip | l2c_data_mpki | 7.0723 | 7.0723 |
-| irrip | ipc | 0.2322 | 0.2322 |
-| irrip | speedup | 0.9983 | 0.9983 |
-| irrip | l2c_load_mpki | 17.7564 | 17.7564 |
-| irrip | l2c_instr_mpki | 9.6320 | 9.6320 |
-| irrip | l2c_data_mpki | 8.1244 | 8.1244 |
-| irrip_ins_only | ipc | 0.2323 | 0.2323 |
-| irrip_ins_only | speedup | 0.9989 | 0.9989 |
-| irrip_ins_only | l2c_load_mpki | 17.5572 | 17.5572 |
-| irrip_ins_only | l2c_instr_mpki | 10.2221 | 10.2221 |
-| irrip_ins_only | l2c_data_mpki | 7.3352 | 7.3352 |
-| irrip_no_evict | ipc | 0.2326 | 0.2326 |
-| irrip_no_evict | speedup | 1.0000 | 1.0000 |
-| irrip_no_evict | l2c_load_mpki | 17.5271 | 17.5271 |
-| irrip_no_evict | l2c_instr_mpki | 10.0204 | 10.0204 |
-| irrip_no_evict | l2c_data_mpki | 7.5066 | 7.5066 |
-| irrip_ins0 | ipc | 0.2319 | 0.2319 |
-| irrip_ins0 | speedup | 0.9974 | 0.9974 |
-| irrip_ins0 | l2c_load_mpki | 17.9764 | 17.9764 |
-| irrip_ins0 | l2c_instr_mpki | 9.6257 | 9.6257 |
-| irrip_ins0 | l2c_data_mpki | 8.3507 | 8.3507 |
+| config | metric | Trace1 | Trace3 | GMEAN/AVG |
+|---|---|---|---|---|
+| baseline | ipc | 0.2326 | 0.3819 | 0.3072 |
+| baseline | speedup | 1.0000 | 1.0000 | 1.0000 |
+| baseline | l2c_load_mpki | 17.7085 | 3.9591 | 10.8338 |
+| baseline | l2c_instr_mpki | 10.3525 | 1.1232 | 5.7379 |
+| baseline | l2c_data_mpki | 7.3560 | 2.8359 | 5.0959 |
+| rrip | ipc | 0.2322 | 0.3816 | 0.3069 |
+| rrip | speedup | 0.9985 | 0.9992 | 0.9989 |
+| rrip | l2c_load_mpki | 17.6223 | 4.0416 | 10.8319 |
+| rrip | l2c_instr_mpki | 10.5500 | 1.1953 | 5.8726 |
+| rrip | l2c_data_mpki | 7.0723 | 2.8463 | 4.9593 |
+| irrip | ipc | 0.2322 | 0.3819 | 0.3070 |
+| irrip | speedup | 0.9983 | 1.0000 | 0.9991 |
+| irrip | l2c_load_mpki | 17.7564 | 3.8439 | 10.8001 |
+| irrip | l2c_instr_mpki | 9.6320 | 0.9341 | 5.2830 |
+| irrip | l2c_data_mpki | 8.1244 | 2.9098 | 5.5171 |
+| irrip_ins_only | ipc | 0.2323 | 0.3818 | 0.3070 |
+| irrip_ins_only | speedup | 0.9989 | 0.9996 | 0.9993 |
+| irrip_ins_only | l2c_load_mpki | 17.5572 | 3.9858 | 10.7715 |
+| irrip_ins_only | l2c_instr_mpki | 10.2221 | 1.1189 | 5.6705 |
+| irrip_ins_only | l2c_data_mpki | 7.3352 | 2.8669 | 5.1010 |
+| irrip_no_evict | ipc | 0.2326 | 0.3819 | 0.3072 |
+| irrip_no_evict | speedup | 1.0000 | 0.9999 | 1.0000 |
+| irrip_no_evict | l2c_load_mpki | 17.5271 | 3.9280 | 10.7275 |
+| irrip_no_evict | l2c_instr_mpki | 10.0204 | 1.0633 | 5.5418 |
+| irrip_no_evict | l2c_data_mpki | 7.5066 | 2.8647 | 5.1857 |
+| irrip_ins0 | ipc | 0.2319 | 0.3819 | 0.3069 |
+| irrip_ins0 | speedup | 0.9974 | 0.9998 | 0.9986 |
+| irrip_ins0 | l2c_load_mpki | 17.9764 | 3.8480 | 10.9122 |
+| irrip_ins0 | l2c_instr_mpki | 9.6257 | 0.9236 | 5.2747 |
+| irrip_ins0 | l2c_data_mpki | 8.3507 | 2.9244 | 5.6375 |

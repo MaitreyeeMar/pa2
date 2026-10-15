@@ -1,56 +1,56 @@
-| config | metric | Trace1 | GMEAN/AVG |
-|---|---|---|---|
-| baseline | ipc | 0.2326 | 0.2326 |
-| baseline | speedup | 1.0000 | 1.0000 |
-| baseline | l1d_coverage | 0.0000 | 0.0000 |
-| baseline | l1d_load_mpki | 10.6781 | 10.6781 |
-| baseline | l2c_load_mpki | 17.7085 | 17.7085 |
-| baseline | l2c_instr_mpki | 10.3525 | 10.3525 |
-| baseline | l2c_data_mpki | 7.3560 | 7.3560 |
-| spp | ipc | 0.2342 | 0.2342 |
-| spp | speedup | 1.0072 | 1.0072 |
-| spp | l1d_pf_acc | 50.2761 | 50.2761 |
-| spp | l1d_coverage | 10.3644 | 10.3644 |
-| spp | l1d_load_mpki | 9.5714 | 9.5714 |
-| spp | l2c_load_mpki | 16.7964 | 16.7964 |
-| spp | l2c_instr_mpki | 10.4030 | 10.4030 |
-| spp | l2c_data_mpki | 6.3935 | 6.3935 |
-| dyn_t25 | ipc | 0.2323 | 0.2323 |
-| dyn_t25 | speedup | 0.9987 | 0.9987 |
-| dyn_t25 | l1d_coverage | -0.0041 | -0.0041 |
-| dyn_t25 | l1d_load_mpki | 10.6786 | 10.6786 |
-| dyn_t25 | l2c_load_mpki | 17.7594 | 17.7594 |
-| dyn_t25 | l2c_instr_mpki | 9.6666 | 9.6666 |
-| dyn_t25 | l2c_data_mpki | 8.0928 | 8.0928 |
-| spp_rrip | ipc | 0.2342 | 0.2342 |
-| spp_rrip | speedup | 1.0069 | 1.0069 |
-| spp_rrip | l1d_pf_acc | 50.4593 | 50.4593 |
-| spp_rrip | l1d_coverage | 10.3749 | 10.3749 |
-| spp_rrip | l1d_load_mpki | 9.5703 | 9.5703 |
-| spp_rrip | l2c_load_mpki | 16.7790 | 16.7790 |
-| spp_rrip | l2c_instr_mpki | 10.6149 | 10.6149 |
-| spp_rrip | l2c_data_mpki | 6.1641 | 6.1641 |
-| spp_dyn_nopfa | ipc | 0.2342 | 0.2342 |
-| spp_dyn_nopfa | speedup | 1.0072 | 1.0072 |
-| spp_dyn_nopfa | l1d_pf_acc | 50.3767 | 50.3767 |
-| spp_dyn_nopfa | l1d_coverage | 10.3647 | 10.3647 |
-| spp_dyn_nopfa | l1d_load_mpki | 9.5714 | 9.5714 |
-| spp_dyn_nopfa | l2c_load_mpki | 16.7480 | 16.7480 |
-| spp_dyn_nopfa | l2c_instr_mpki | 9.6962 | 9.6962 |
-| spp_dyn_nopfa | l2c_data_mpki | 7.0518 | 7.0518 |
-| spp_dyn | ipc | 0.2341 | 0.2341 |
-| spp_dyn | speedup | 1.0066 | 1.0066 |
-| spp_dyn | l1d_pf_acc | 50.1163 | 50.1163 |
-| spp_dyn | l1d_coverage | 10.3299 | 10.3299 |
-| spp_dyn | l1d_load_mpki | 9.5751 | 9.5751 |
-| spp_dyn | l2c_load_mpki | 16.7144 | 16.7144 |
-| spp_dyn | l2c_instr_mpki | 9.6554 | 9.6554 |
-| spp_dyn | l2c_data_mpki | 7.0590 | 7.0590 |
-| spp_dyn_pf2 | ipc | 0.2341 | 0.2341 |
-| spp_dyn_pf2 | speedup | 1.0066 | 1.0066 |
-| spp_dyn_pf2 | l1d_pf_acc | 50.1985 | 50.1985 |
-| spp_dyn_pf2 | l1d_coverage | 10.3644 | 10.3644 |
-| spp_dyn_pf2 | l1d_load_mpki | 9.5714 | 9.5714 |
-| spp_dyn_pf2 | l2c_load_mpki | 16.7240 | 16.7240 |
-| spp_dyn_pf2 | l2c_instr_mpki | 9.6982 | 9.6982 |
-| spp_dyn_pf2 | l2c_data_mpki | 7.0258 | 7.0258 |
+| config | metric | Trace1 | Trace3 | GMEAN/AVG |
+|---|---|---|---|---|
+| baseline | ipc | 0.2326 | 0.3819 | 0.3072 |
+| baseline | speedup | 1.0000 | 1.0000 | 1.0000 |
+| baseline | l1d_coverage | 0.0000 | 0.0000 | 0.0000 |
+| baseline | l1d_load_mpki | 10.6781 | 3.4033 | 7.0407 |
+| baseline | l2c_load_mpki | 17.7085 | 3.9591 | 10.8338 |
+| baseline | l2c_instr_mpki | 10.3525 | 1.1232 | 5.7379 |
+| baseline | l2c_data_mpki | 7.3560 | 2.8359 | 5.0959 |
+| spp | ipc | 0.2342 | 0.3899 | 0.3120 |
+| spp | speedup | 1.0072 | 1.0208 | 1.0139 |
+| spp | l1d_pf_acc | 50.2761 | 39.0520 | 44.6641 |
+| spp | l1d_coverage | 10.3644 | 18.1858 | 14.2751 |
+| spp | l1d_load_mpki | 9.5714 | 2.7844 | 6.1779 |
+| spp | l2c_load_mpki | 16.7964 | 3.2022 | 9.9993 |
+| spp | l2c_instr_mpki | 10.4030 | 1.1556 | 5.7793 |
+| spp | l2c_data_mpki | 6.3935 | 2.0466 | 4.2200 |
+| dyn_t25 | ipc | 0.2323 | 0.3817 | 0.3070 |
+| dyn_t25 | speedup | 0.9987 | 0.9994 | 0.9991 |
+| dyn_t25 | l1d_coverage | -0.0041 | 0.0035 | -0.0003 |
+| dyn_t25 | l1d_load_mpki | 10.6786 | 3.4032 | 7.0409 |
+| dyn_t25 | l2c_load_mpki | 17.7594 | 3.9366 | 10.8480 |
+| dyn_t25 | l2c_instr_mpki | 9.6666 | 1.0373 | 5.3520 |
+| dyn_t25 | l2c_data_mpki | 8.0928 | 2.8993 | 5.4961 |
+| spp_rrip | ipc | 0.2342 | 0.3895 | 0.3119 |
+| spp_rrip | speedup | 1.0069 | 1.0199 | 1.0134 |
+| spp_rrip | l1d_pf_acc | 50.4593 | 39.2150 | 44.8372 |
+| spp_rrip | l1d_coverage | 10.3749 | 18.2246 | 14.2997 |
+| spp_rrip | l1d_load_mpki | 9.5703 | 2.7831 | 6.1767 |
+| spp_rrip | l2c_load_mpki | 16.7790 | 3.2720 | 10.0255 |
+| spp_rrip | l2c_instr_mpki | 10.6149 | 1.2171 | 5.9160 |
+| spp_rrip | l2c_data_mpki | 6.1641 | 2.0550 | 4.1095 |
+| spp_dyn_nopfa | ipc | 0.2342 | 0.3897 | 0.3120 |
+| spp_dyn_nopfa | speedup | 1.0072 | 1.0204 | 1.0138 |
+| spp_dyn_nopfa | l1d_pf_acc | 50.3767 | 39.3614 | 44.8691 |
+| spp_dyn_nopfa | l1d_coverage | 10.3647 | 18.3538 | 14.3593 |
+| spp_dyn_nopfa | l1d_load_mpki | 9.5714 | 2.7787 | 6.1750 |
+| spp_dyn_nopfa | l2c_load_mpki | 16.7480 | 3.1550 | 9.9515 |
+| spp_dyn_nopfa | l2c_instr_mpki | 9.6962 | 1.0534 | 5.3748 |
+| spp_dyn_nopfa | l2c_data_mpki | 7.0518 | 2.1015 | 4.5767 |
+| spp_dyn | ipc | 0.2341 | 0.3898 | 0.3120 |
+| spp_dyn | speedup | 1.0066 | 1.0207 | 1.0136 |
+| spp_dyn | l1d_pf_acc | 50.1163 | 39.2229 | 44.6696 |
+| spp_dyn | l1d_coverage | 10.3299 | 18.3515 | 14.3407 |
+| spp_dyn | l1d_load_mpki | 9.5751 | 2.7788 | 6.1769 |
+| spp_dyn | l2c_load_mpki | 16.7144 | 3.1216 | 9.9180 |
+| spp_dyn | l2c_instr_mpki | 9.6554 | 1.0304 | 5.3429 |
+| spp_dyn | l2c_data_mpki | 7.0590 | 2.0912 | 4.5751 |
+| spp_dyn_pf2 | ipc | 0.2341 | 0.3898 | 0.3119 |
+| spp_dyn_pf2 | speedup | 1.0066 | 1.0206 | 1.0136 |
+| spp_dyn_pf2 | l1d_pf_acc | 50.1985 | 39.2994 | 44.7490 |
+| spp_dyn_pf2 | l1d_coverage | 10.3644 | 18.2916 | 14.3280 |
+| spp_dyn_pf2 | l1d_load_mpki | 9.5714 | 2.7808 | 6.1761 |
+| spp_dyn_pf2 | l2c_load_mpki | 16.7240 | 3.1448 | 9.9344 |
+| spp_dyn_pf2 | l2c_instr_mpki | 9.6982 | 1.0474 | 5.3728 |
+| spp_dyn_pf2 | l2c_data_mpki | 7.0258 | 2.0974 | 4.5616 |
